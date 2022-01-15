@@ -52,8 +52,8 @@ class IrAttachment(models.Model):
     time_from=fields.Char(string="مواعيد العمل من ",indexed=True,tracking=1,store=True)
     time_to = fields.Char(string="الى ", indexed=True, tracking=1, store=True)
     day_off= fields.Char("ايام الاجازه")
-    long=fields.Float(string="خط الطول ", indexed=True, tracking=1, store=True)
-    lat = fields.Float(string="خط العرض ", indexed=True, tracking=1, store=True)
+    long=fields.Float(string="خط الطول ", indexed=True, tracking=1, store=True, digits=(12,10))
+    lat = fields.Float(string="خط العرض ", indexed=True, tracking=1, store=True, digits=(12,10))
     house_service = fields.Boolean(string="الخدمة المنزلية")
 
 
