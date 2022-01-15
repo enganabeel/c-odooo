@@ -121,6 +121,14 @@
                   <field name="x_paid"/>
                     <field name="sign_date" />
                   <field name="x_signing_problem"/>
+                    <field name="time_from" />
+                              <field name="time_to" />
+                              <field name="day_off" />
+                              <field name="long" />
+                              <field name="lat" />
+                                <field name="house_service" />
+                              <field name="web_site" />
+
                   <field name="create_uid"/>
                   <field name="create_date"/>
                   <field name="create_uid" />

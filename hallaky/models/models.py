@@ -21,7 +21,7 @@ class IrAttachment(models.Model):
     _description = 'Shop'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name=fields.Char(string="Name",store=True,index=True)
+    name=fields.Char(string="Name",store=True,index=True,tracking=1,)
     x_activity = fields.Many2one('mail.activity.type',string="Activity",indexed=True,tracking=1,store=True)
     x_address= fields.Char(string="Address",indexed=True,tracking=1,store=True)
     x_assigned_to = fields.Many2one('res.partner',string="Assigned",indexed=True,tracking=1,store=True)
@@ -40,14 +40,14 @@ class IrAttachment(models.Model):
     x_street = fields.Many2one('x_street', string="Street", indexed=True, tracking=1, store=True)
     sign_date =fields.Date(string="Payment Date")
 
-    has_branches = fields.Boolean('Has Branches ? ')
+    has_branches = fields.Boolean('Has Branches ? ',tracking=1)
 
-    branches_ids = fields.One2many('mobile_shop','branch_id')
+    branches_ids = fields.One2many('mobile_shop','branch_id',tracking=1,)
 
-    is_a_branch = fields.Boolean('Is A Branch')
-    branch_id = fields.Many2one('mobile_shop')
-    web_site = fields.Char("الموقع الالكتروني ")
-    hallakeen_data = fields.One2many('hallakeen_data','shop_id')
+    is_a_branch = fields.Boolean('Is A Branch',tracking=1,)
+    branch_id = fields.Many2one('mobile_shop',tracking=1,)
+    web_site = fields.Char("الموقع الالكتروني ",tracking=1,)
+    hallakeen_data = fields.One2many('hallakeen_data','shop_id',tracking=1,)
 
     time_from=fields.Char(string="مواعيد العمل من ",indexed=True,tracking=1,store=True)
     time_to = fields.Char(string="الى ", indexed=True, tracking=1, store=True)
