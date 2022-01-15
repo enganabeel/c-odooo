@@ -38,6 +38,7 @@
                               <field name="lat" />
                                 <field name="house_service" />
                               <field name="web_site" />
+                              <field name="hallaky_user_name" />
 
 <field name="hallakeen_data" />
                               <field name="has_branches" />
@@ -128,7 +129,7 @@
                               <field name="lat" />
                                 <field name="house_service" />
                               <field name="web_site" />
-
+<field name="hallaky_user_name" />
                   <field name="create_uid"/>
                   <field name="create_date"/>
                   <field name="create_uid" />

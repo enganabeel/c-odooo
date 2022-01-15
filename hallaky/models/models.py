@@ -45,8 +45,9 @@ class IrAttachment(models.Model):
     branches_ids = fields.One2many('mobile_shop','branch_id',tracking=1,)
 
     is_a_branch = fields.Boolean('Is A Branch',tracking=1,)
-    branch_id = fields.Many2one('mobile_shop',tracking=1,)
+    branch_id = fields.Many2one('mobile_shop',string="Main Branch",tracking=1,)
     web_site = fields.Char("الموقع الالكتروني ",tracking=1,)
+    hallaky_user_name = fields.Char("اسم مستخدم حلاقي ", tracking=1, )
     hallakeen_data = fields.One2many('hallakeen_data','shop_id',tracking=1,)
 
     time_from=fields.Char(string="مواعيد العمل من ",indexed=True,tracking=1,store=True)
