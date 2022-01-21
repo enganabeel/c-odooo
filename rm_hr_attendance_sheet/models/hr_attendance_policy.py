@@ -91,15 +91,15 @@ class HrAttendancePolicy(models.Model):
                             no = counter[1]
                             counter[1] += 1
                             break
-                    if no >= 5 and line.fifth > 0:
+                    if no >= 5 and line.fifth >= 0:
                         factor = line.fifth
-                    elif no >= 4 and line.fourth > 0:
+                    elif no >= 4 and line.fourth >= 0:
                         factor = line.fourth
-                    elif no >= 3 and line.third > 0:
+                    elif no >= 3 and line.third >= 0:
                         factor = line.third
-                    elif no >= 2 and line.second > 0:
+                    elif no >= 2 and line.second >= 0:
                         factor = line.second
-                    elif no >= 1 and line.first > 0:
+                    elif no >= 1 and line.first >= 0:
                         factor = line.first
                     elif no == 0:
                         factor = 0

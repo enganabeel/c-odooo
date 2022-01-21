@@ -20,12 +20,10 @@
                 'hr',
                 'hr_payroll',
                 'hr_holidays',
-                'hr_attendance',
-                'hr_employee_contract',],
+                'hr_attendance'],
     'data': [
         'data/ir_sequence.xml',
         'data/data.xml',
-        'data/attendance_data2.xml',
         'security/security.xml',
         'security/ir.model.access.csv',
         'wizard/change_att_data_view.xml',

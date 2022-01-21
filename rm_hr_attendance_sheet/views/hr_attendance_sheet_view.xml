@@ -136,41 +136,6 @@
 
                             </group>
                         </page>
-                        <page string="Extra Attendance Sheet Data">
-                            <group>
-                                <group string="Total Termination Allowance">
-                                    <field name="termination_indemnity" widget="float_time" readonly="1"/>
-                                </group>
-                                <group string="Social Insurance">
-                                    <field name="employee_insurance_amount" widget="float_time" readonly="1"/>
-                                    <field name="employee_gosi" widget="float_time" readonly="1"/>
-                                </group>
-                                <group string="Medical Insurance">
-                                    <field name="medical_insurance_employee" widget="float_time" readonly="1"/>
-                                    <field name="medical_insurance_family" widget="float_time" readonly="1"/>
-                                </group>
-                                <group string="Allowances And Deductions">
-                                    <field name="house_allowances" widget="float_time" readonly="1"/>
-                                    <field name="transport_allowances" widget="float_time" readonly="1"/>
-<!--                                    <field name="living_allowances" widget="float_time" readonly="1"/>-->
-                                    <field name="other_allowances" widget="float_time" readonly="1"/>
-<!--                                    <field name="internal_travel_allowances" widget="float_time" readonly="1"/>-->
-                                    <field name="general_deductions" widget="float_time" readonly="1"/>
-                                    <field name="penalty" widget="float_time" readonly="1"/>
-                                    <field name="business_trip" widget="float_time" readonly="1"/>
-<!--                                    <field name="residency_issuance_and_renewal_costs" widget="float_time" readonly="1"/>-->
-
-
-<!--                                    <field name="nature_of_work_allowances" widget="float_time" readonly="1"/>-->
-<!--                                    <field name="food_allowances" widget="float_time" readonly="1"/>-->
-<!--                                    <field name="end_of_service_allowance" widget="float_time" readonly="1"/>-->
-<!--                                    <field name="telephone_allowance" widget="float_time" readonly="1"/>-->
-<!--                                    <field name="contract_extension" widget="float_time" readonly="1"/>-->
-<!--                                    <field name="constant_refundable_advance" widget="float_time" readonly="1"/>-->
-                                </group>
-                            </group>
-                        </page>
-
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">

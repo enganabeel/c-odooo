@@ -93,134 +93,6 @@ class AttendanceSheet(models.Model):
                                   readonly=True,
                                   states={'draft': [('readonly', False)]})
 
-    termination_indemnity = fields.Float(string="", required=False, )
-    penalty = fields.Float('Total Penalty')
-
-    # TODO Insurance fields
-    employee_insurance_amount = fields.Float()
-    employee_gosi = fields.Float(string="Employee Gosi", required=False, )
-    medical_insurance_employee = fields.Float()
-    medical_insurance_family = fields.Float()
-
-    # TODO allowances fields
-    house_allowances = fields.Float()
-    transport_allowances = fields.Float()
-    # living_allowances = fields.Float()
-    other_allowances = fields.Float()
-    # internal_travel_allowances = fields.Float()
-    ###########################################################################
-    # nature_of_work_allowances = fields.Float()
-    # food_allowances = fields.Float()
-    # end_of_service_allowance = fields.Float()
-    # telephone_allowance = fields.Float()
-    # contract_extension = fields.Float()
-    # constant_refundable_advance = fields.Float(string="Refundable Advance")
-
-    # TODO deductions fields
-    general_deductions = fields.Float()
-
-    business_trip = fields.Float()
-    # residency_issuance_and_renewal_costs = fields.Float()
-
-    # TODO _____________ AHMED SABER START CUSTOM FUNCTIONS FOR CUSTOM SALARY ROLES _____________
-
-    def update_current_penalty_to_paid(self):
-        employee = self.employee_id
-        date_from = self.date_from
-        date_to = self.date_to
-        total_amount = 0
-        domain = [('employee_id', '=', employee.id), ('request_date', '>=', date_from), ('request_date', '<=', date_to),
-                  ('state', '=', 'approved')]
-        loans_for_emp = self.env['penalty.request'].search(domain)
-        print('loans_for_emp >>>>>>>>>>>', loans_for_emp)
-        for loan in loans_for_emp:
-            penalty_ids = loan.penalty_ids.filtered(lambda x: not x.paid and x.date >= date_from and x.date <= date_to)
-            print('penalty_ids >>>>>>>>>>>>>>>>>>', penalty_ids)
-            for pay in penalty_ids:
-                total_amount += pay.amount
-                pay.write({'paid': True})
-        print('total_amount', total_amount)
-        self.penalty = total_amount
-
-    def update_termination_indemnity_allowance(self):
-        employee = self.employee_id
-        total_amount = 0
-        domain = [('employee_id', '=', employee.id), ('state', '=', 'open') ]
-        contract_object = self.env['hr.contract'].search(domain)
-        print("contract_object >>>>>>>>>>>>>>", contract_object)
-        if contract_object:
-            domain = [('employee_id', '=', employee.id), ('accounting_method', '=', False), ('state', '=', 'approved')]
-            termination_object = self.env['hr.termination'].search(domain)
-            print("termination_object[0].indemnity >>>>>>>>>>>", termination_object.indemnity)
-            total_amount = termination_object.indemnity
-        self.termination_indemnity = total_amount
-
-    def update_all_allowance_and_deduction_fields(self):
-        employee = self.employee_id
-        domain = [('employee_id', '=', employee.id), ('state', '=', 'open'), ]
-        contract_object = self.env['hr.contract'].search(domain)
-        print("contract_object >>>>>>>>>>>>>>", contract_object)
-        if contract_object:
-            self.house_allowances = contract_object[0].house_allowances
-            self.transport_allowances = contract_object[0].transport_allowances
-            # self.living_allowances = contract_object[0].living_allowances
-            self.other_allowances = contract_object[0].other_allowances
-            # self.internal_travel_allowances = contract_object[0].internal_travel_allowances
-            self.general_deductions = contract_object[0].general_deductions
-            self.medical_insurance_employee = contract_object[0].medical_insurance_employee
-            self.medical_insurance_family = contract_object[0].medical_insurance_family
-            # self.residency_issuance_and_renewal_costs = contract_object[0].residency_issuance_and_renewal_costs
-            # self.nature_of_work_allowances = contract_object[0].nature_of_work_allowances
-            # self.food_allowances = contract_object[0].food_allowances
-            # self.end_of_service_allowance = contract_object[0].end_of_service_allowance
-            # self.telephone_allowance = contract_object[0].telephone_allowance
-            # self.contract_extension = contract_object[0].contract_extension
-            # self.constant_refundable_advance = contract_object[0].constant_refundable_advance
-            if contract_object.type_of_company_offices == 'saudi_office':
-                self.employee_insurance_amount = 0.0
-                self.employee_gosi = contract_object[0].employee_gosi
-            elif contract_object.type_of_company_offices == 'egyptian_office':
-                self.employee_insurance_amount = contract_object[0].employee_amount
-                self.employee_gosi = 0.0
-            else:
-                self.employee_insurance_amount = 0.0
-                self.employee_gosi = 0.0
-        else:
-            self.house_allowances = 0.0
-            self.transport_allowances = 0.0
-            # self.living_allowances = 0.0
-            self.other_allowances = 0.0
-            # self.internal_travel_allowances = 0.0
-            self.general_deductions = 0.0
-            self.medical_insurance_employee = 0.0
-            self.medical_insurance_family = 0.0
-            self.employee_insurance_amount = 0.0
-            self.employee_gosi = 0.0
-            # self.residency_issuance_and_renewal_costs = 0.0
-
-            # self.nature_of_work_allowances = 0.0
-            # self.food_allowances = 0.0
-            # self.end_of_service_allowance = 0.0
-            # self.telephone_allowance = 0.0
-            # self.contract_extension = 0.0
-            # self.constant_refundable_advance = 0.0
-
-    def update_current_business_trip_cost_deduction(self):
-        employee = self.employee_id
-        date_from = self.date_from
-        date_to = self.date_to
-        total_amount = 0
-        domain = [('employee_id', '=', employee.id), ('today_date', '>=', date_from),
-                  ('today_date', '<=', date_to),
-                  ('state', '=', 'confirm')]
-        business_object = self.env['business.trip'].search(domain)
-        for trip in business_object:
-            if trip.Total_price > 0:
-                total_amount += trip.Total_price
-        self.business_trip = total_amount
-
-    # TODO _____________ AHMED SABER END CUSTOM FUNCTIONS FOR CUSTOM SALARY ROLES _____________
-
     def unlink(self):
         if any(self.filtered(
                 lambda att: att.state not in ('draft', 'confirm'))):
@@ -246,10 +118,6 @@ class AttendanceSheet(models.Model):
 
     def action_confirm(self):
         self.write({'state': 'confirm'})
-        self.update_termination_indemnity_allowance()
-        self.update_all_allowance_and_deduction_fields()
-        self.update_current_penalty_to_paid()
-        self.update_current_business_trip_cost_deduction()
 
     def action_approve(self):
         self.action_create_payslip()
@@ -293,13 +161,8 @@ class AttendanceSheet(models.Model):
             sheet.no_overtime = len(overtime_lines)
             # Compute Total Late In
             late_lines = sheet.line_ids.filtered(lambda l: l.late_in > 0)
-            the_total = sum([l.late_in for l in late_lines])
+            sheet.tot_late = sum([l.late_in for l in late_lines])
             sheet.no_late = len(late_lines)
-            if the_total > 240:
-                the_rest = the_total - 240
-                sheet.tot_late = 240 + the_rest * 2
-            else:
-                sheet.tot_late = the_total
             # Compute Absence
             absence_lines = sheet.line_ids.filtered(
                 lambda l: l.diff_time > 0 and l.status == "ab")
@@ -404,7 +267,7 @@ class AttendanceSheet(models.Model):
                                             second=59)
                 day_str = str(day.weekday())
                 date = day.strftime('%Y-%m-%d')
-                work_intervals = att_sheet._get_work_intervals(calendar_id, day_start, day_end, tz)
+                work_intervals = att_sheet._get_work_intervals(calendar_id,day_start,day_end, tz)
                 attendance_intervals = self.get_attendance_intervals(emp,
                                                                      day_start,
                                                                      day_end,
@@ -769,7 +632,7 @@ class AttendanceSheet(models.Model):
                         }
                         att_line.create(values)
 
-    def _get_work_intervals(self, calendar, day_start, day_end, tz):
+    def _get_work_intervals(self,calendar,day_start,day_end,tz):
         self.ensure_one()
         return calendar.att_get_work_intervals(day_start, day_end, tz)
 
@@ -801,8 +664,8 @@ class AttendanceSheet(models.Model):
                 'employee_id': sheet.employee_id.id,
                 'date_from': sheet.date_from,
                 'date_to': sheet.date_to,
-                'contract_id': contracts[0].id,
-                'struct_id': contracts[0].structure_type_id.default_struct_id.id
+                'contract_id':contracts[0].id,
+                'struct_id':contracts[0].structure_type_id.default_struct_id.id
             })
             new_payslip._onchange_employee()
             payslip_dict = new_payslip._convert_to_write({
@@ -814,7 +677,7 @@ class AttendanceSheet(models.Model):
                                                worked_day_lines]
             payslip_id.compute_sheet()
             sheet.payslip_id = payslip_id
-            payslips += payslip_id
+            payslips+=payslip_id
         return payslips
 
     def _get_workday_lines(self):
@@ -825,30 +688,6 @@ class AttendanceSheet(models.Model):
         latin_work_entry = work_entry_obj.search([('code', '=', 'ATTSHLI')])
         absence_work_entry = work_entry_obj.search([('code', '=', 'ATTSHAB')])
         difftime_work_entry = work_entry_obj.search([('code', '=', 'ATTSHDT')])
-        termination_indemnity_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTERM')])
-
-        house_allowances_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTHOUSAL')])
-        transport_allowances_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTTARNSAL')])
-        # living_allowances_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTLIVAL')])
-        other_allowances_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTOTHAL')])
-        # internal_travel_allowances_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTINTAL')])
-        general_deductions_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTGENAL')])
-
-        medical_insurance_employee_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTEMPDED')])
-        medical_insurance_family_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTFAMDED')])
-        employee_insurance_amount_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTEMPINSDED')])
-        employee_gosi_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTEMPGOSIDED')])
-        employee_penalty_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTPENDED')])
-        business_trip_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTBUSTR')])
-        # residency_issuance_and_renewal_costs_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTRESESSCOST')])
-
-        # nature_of_work_allowances_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTNATWORK')])
-        # food_allowances_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTFOODALOW')])
-        # end_of_service_allowance_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTENDSER')])
-        # telephone_allowance_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTTEL')])
-        # contract_extension_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTCONTALW')])
-        # constant_refundable_advance_work_entry = work_entry_obj.search([('code', '=', 'ATTSHTCONTREFALW')])
-
         if not overtime_work_entry:
             raise ValidationError(_(
                 'Please Add Work Entry Type For Attendance Sheet Overtime With Code ATTSHOT'))
@@ -861,241 +700,6 @@ class AttendanceSheet(models.Model):
         if not difftime_work_entry:
             raise ValidationError(_(
                 'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHDT'))
-
-        # TODO _____________ AHMED SABER START CUSTOM work_entry _____________
-        if not termination_indemnity_work_entry:
-            raise ValidationError(_(
-                'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTERM'))
-        if not house_allowances_work_entry:
-            raise ValidationError(_(
-                'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTHOUSAL'))
-        if not transport_allowances_work_entry:
-            raise ValidationError(_(
-                'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTTARNSAL'))
-        # if not living_allowances_work_entry:
-        #     raise ValidationError(_(
-        #         'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTLIVAL'))
-        if not other_allowances_work_entry:
-            raise ValidationError(_(
-                'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTOTHAL'))
-        # if not internal_travel_allowances_work_entry:
-        #     raise ValidationError(_(
-        #         'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTINTAL'))
-        if not general_deductions_work_entry:
-            raise ValidationError(_(
-                'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTGENAL'))
-        if not medical_insurance_employee_work_entry:
-            raise ValidationError(_(
-                'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTEMPDED'))
-        if not medical_insurance_family_work_entry:
-            raise ValidationError(_(
-                'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTFAMDED'))
-        if not employee_insurance_amount_work_entry:
-            raise ValidationError(_(
-                'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTEMPINSDED'))
-        if not employee_gosi_work_entry:
-            raise ValidationError(_(
-                'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTEMPGOSIDED'))
-        if not employee_penalty_work_entry:
-            raise ValidationError(_(
-                'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTPENDED'))
-        if not business_trip_work_entry:
-            raise ValidationError(_(
-                'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTBUSTR'))
-        # if not residency_issuance_and_renewal_costs_work_entry:
-        #     raise ValidationError(_(
-        #         'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTRESESSCOST'))
-
-        # if not nature_of_work_allowances_work_entry:
-        #     raise ValidationError(_(
-        #         'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTNATWORK'))
-        # if not food_allowances_work_entry:
-        #     raise ValidationError(_(
-        #         'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTFOODALOW'))
-        # if not end_of_service_allowance_work_entry:
-        #     raise ValidationError(_(
-        #         'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTENDSER'))
-        # if not telephone_allowance_work_entry:
-        #     raise ValidationError(_(
-        #         'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTTEL'))
-        # if not contract_extension_work_entry:
-        #     raise ValidationError(_(
-        #         'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTCONTALW'))
-        # if not constant_refundable_advance_work_entry:
-        #     raise ValidationError(_(
-        #         'Please Add Work Entry Type For Attendance Sheet Diff Time With Code ATTSHTCONTREFALW'))
-
-        # TODO _____________ AHMED SABER END CUSTOM work_entry _____________
-
-        # TODO _____________ AHMED SABER START CUSTOM SALARY ROLES _____________
-        termination_indemnity_allowance = [{
-            'name': "TERMINATION ALLOWANCE",
-            'code': 'TERMINATION',
-            'work_entry_type_id': termination_indemnity_work_entry[0].id,
-            'sequence': 50,
-            'number_of_days': 0,
-            'number_of_hours': self.termination_indemnity,
-        }]
-        house_allowances = [{
-            'name': "House Allowance",
-            'code': 'HouseAllowance',
-            'work_entry_type_id': house_allowances_work_entry[0].id,
-            'sequence': 55,
-            'number_of_days': 0,
-            'number_of_hours': self.house_allowances,
-        }]
-        transport_allowances = [{
-            'name': "Transport ALLOWANCE",
-            'code': 'TransportALLOWANCE',
-            'work_entry_type_id': transport_allowances_work_entry[0].id,
-            'sequence': 60,
-            'number_of_days': 0,
-            'number_of_hours': self.transport_allowances,
-        }]
-        # living_allowances = [{
-        #     'name': "living ALLOWANCE",
-        #     'code': 'livingALLOWANCE',
-        #     'work_entry_type_id': living_allowances_work_entry[0].id,
-        #     'sequence': 65,
-        #     'number_of_days': 0,
-        #     'number_of_hours': self.living_allowances,
-        # }]
-        other_allowances = [{
-            'name': "Other ALLOWANCE",
-            'code': 'OtherALLOWANCE',
-            'work_entry_type_id': other_allowances_work_entry[0].id,
-            'sequence': 70,
-            'number_of_days': 0,
-            'number_of_hours': self.other_allowances,
-        }]
-        # internal_travel_allowance = [{
-        #     'name': "Internal Travel ALLOWANCE",
-        #     'code': 'InternalTravelALLOWANCE',
-        #     'work_entry_type_id': internal_travel_allowances_work_entry[0].id,
-        #     'sequence': 75,
-        #     'number_of_days': 0,
-        #     'number_of_hours': self.internal_travel_allowances,
-        # }]
-        general_deductions = [{
-            'name': "General Deductions",
-            'code': 'GeneralDeductions',
-            'work_entry_type_id': general_deductions_work_entry[0].id,
-            'sequence': 80,
-            'number_of_days': 0,
-            'number_of_hours': self.general_deductions,
-        }]
-
-        medical_insurance_employee_deduction = [{
-            'name': "Medical Insurance Employee",
-            'code': 'MedicalInsuranceEmployee',
-            'work_entry_type_id': medical_insurance_employee_work_entry[0].id,
-            'sequence': 85,
-            'number_of_days': 0,
-            'number_of_hours': self.medical_insurance_employee,
-        }]
-        medical_insurance_family_deduction = [{
-            'name': "Medical Insurance Family",
-            'code': 'MedicalInsuranceFamily',
-            'work_entry_type_id': medical_insurance_family_work_entry[0].id,
-            'sequence': 90,
-            'number_of_days': 0,
-            'number_of_hours': self.medical_insurance_family,
-        }]
-        employee_insurance_amount_deduction = [{
-            'name': "Employee Insurance Amount",
-            'code': 'EmployeeInsuranceAmount',
-            'work_entry_type_id': employee_insurance_amount_work_entry[0].id,
-            'sequence': 95,
-            'number_of_days': 0,
-            'number_of_hours': self.employee_insurance_amount,
-        }]
-        employee_gosi_deduction = [{
-            'name': "Employee Gosi",
-            'code': 'EmployeeGosi',
-            'work_entry_type_id': employee_gosi_work_entry[0].id,
-            'sequence': 100,
-            'number_of_days': 0,
-            'number_of_hours': self.employee_gosi,
-        }]
-        employee_penalty_deduction = [{
-            'name': "Employee Penalty",
-            'code': 'EmployeePenalty',
-            'work_entry_type_id': employee_penalty_work_entry[0].id,
-            'sequence': 105,
-            'number_of_days': 0,
-            'number_of_hours': self.penalty,
-        }]
-        business_trip_deduction = [{
-            'name': "Business Trip",
-            'code': 'BusinessTrip',
-            'work_entry_type_id': business_trip_work_entry[0].id,
-            'sequence': 110,
-            'number_of_days': 0,
-            'number_of_hours': self.business_trip,
-        }]
-        # residency_issuance_and_renewal_costs_deduction = [{
-        #     'name': "Residency Issuance And Renewal Costs",
-        #     'code': 'ResidencyIssuanceAndRenewalCosts',
-        #     'work_entry_type_id': residency_issuance_and_renewal_costs_work_entry[0].id,
-        #     'sequence': 115,
-        #     'number_of_days': 0,
-        #     'number_of_hours': self.residency_issuance_and_renewal_costs,
-        # }]
-
-        # nature_of_work_allowances = [{
-        #     'name': "Nature Of Work Allowances",
-        #     'code': 'NatureOfWorkAllowances',
-        #     'work_entry_type_id': nature_of_work_allowances_work_entry[0].id,
-        #     'sequence': 120,
-        #     'number_of_days': 0,
-        #     'number_of_hours': self.nature_of_work_allowances,
-        # }]
-
-        # food_allowances = [{
-        #     'name': "Food Allowances",
-        #     'code': 'FoodAllowances',
-        #     'work_entry_type_id': food_allowances_work_entry[0].id,
-        #     'sequence': 125,
-        #     'number_of_days': 0,
-        #     'number_of_hours': self.food_allowances,
-        # }]
-
-        # end_of_service_allowance = [{
-        #     'name': "EndOfServiceAllowance",
-        #     'code': 'End Of Service Allowance',
-        #     'work_entry_type_id': end_of_service_allowance_work_entry[0].id,
-        #     'sequence': 130,
-        #     'number_of_days': 0,
-        #     'number_of_hours': self.end_of_service_allowance,
-        # }]
-
-        # telephone_allowance = [{
-        #     'name': "TelephoneAllowance",
-        #     'code': 'Telephone Allowance',
-        #     'work_entry_type_id': telephone_allowance_work_entry[0].id,
-        #     'sequence': 135,
-        #     'number_of_days': 0,
-        #     'number_of_hours': self.telephone_allowance,
-        # }]
-
-        # contract_extension_allowances = [{
-        #     'name': "Contract Extension Allowance",
-        #     'code': 'ContractExtensionAllowance',
-        #     'work_entry_type_id': contract_extension_work_entry[0].id,
-        #     'sequence': 140,
-        #     'number_of_days': 0,
-        #     'number_of_hours': self.contract_extension,
-        # }]
-        # constant_refundable_advance = [{
-        #     'name': "Refundable Advance Allowance",
-        #     'code': 'RefundableAdvanceAllowance',
-        #     'work_entry_type_id': constant_refundable_advance_work_entry[0].id,
-        #     'sequence': 145,
-        #     'number_of_days': 0,
-        #     'number_of_hours': self.constant_refundable_advance,
-        # }]
-
-        # TODO _____________ AHMED SABER END CUSTOM SALARY ROLES _____________
 
         overtime = [{
             'name': "Overtime",
@@ -1129,7 +733,7 @@ class AttendanceSheet(models.Model):
             'number_of_days': self.no_difftime,
             'number_of_hours': self.tot_difftime,
         }]
-        worked_days_lines = overtime + late + absence + difftime + termination_indemnity_allowance + house_allowances + transport_allowances + other_allowances + general_deductions + medical_insurance_employee_deduction + medical_insurance_family_deduction + employee_insurance_amount_deduction + employee_gosi_deduction + employee_penalty_deduction + business_trip_deduction
+        worked_days_lines = overtime + late + absence + difftime
         return worked_days_lines
 
     def create_payslip(self):
@@ -1150,179 +754,6 @@ class AttendanceSheet(models.Model):
                     'There is No Contracts for %s That covers the period of the Attendance sheet' % employee.name)
             worked_days_line_ids = slip_data['value'].get(
                 'worked_days_line_ids')
-            # TODO _____________ AHMED SABER START CUSTOM SALARY ROLES _____________
-
-            termination_indemnity_allowance = [{
-                'name': "TERMINATION ALLOWANCE",
-                'code': 'TERMINATION',
-                'contract_id': contract_id,
-                'sequence': 50,
-                'number_of_days': att_sheet.termination_indemnity,
-                'number_of_hours': att_sheet.termination_indemnity,
-            }]
-            house_allowances = [{
-                'name': "House Allowance",
-                'code': 'HouseAllowance',
-                'contract_id': contract_id,
-                'sequence': 55,
-                'number_of_days': att_sheet.house_allowances,
-                'number_of_hours': att_sheet.house_allowances,
-            }]
-            # transport_allowances = [{
-            #     'name': "Transport ALLOWANCE",
-            #     'code': 'TransportALLOWANCE',
-            #     'contract_id': contract_id,
-            #     'sequence': 60,
-            #     'number_of_days': att_sheet.transport_allowances,
-            #     'number_of_hours': att_sheet.transport_allowances,
-            # }]
-            living_allowances = [{
-                'name': "living ALLOWANCE",
-                'code': 'livingALLOWANCE',
-                'contract_id': contract_id,
-                'sequence': 65,
-                'number_of_days': att_sheet.living_allowances,
-                'number_of_hours': att_sheet.living_allowances,
-            }]
-            other_allowances = [{
-                'name': "Other ALLOWANCE",
-                'code': 'OtherALLOWANCE',
-                'contract_id': contract_id,
-                'sequence': 70,
-                'number_of_days': att_sheet.other_allowances,
-                'number_of_hours': att_sheet.other_allowances,
-            }]
-            # internal_travel_allowance = [{
-            #     'name': "Internal Travel ALLOWANCE",
-            #     'code': 'InternalTravelALLOWANCE',
-            #     'contract_id': contract_id,
-            #     'sequence': 75,
-            #     'number_of_days': att_sheet.internal_travel_allowances,
-            #     'number_of_hours': att_sheet.internal_travel_allowances,
-            # }]
-            general_deductions = [{
-                'name': "General Deductions",
-                'code': 'GeneralDeductions',
-                'contract_id': contract_id,
-                'sequence': 80,
-                'number_of_days': att_sheet.general_deductions,
-                'number_of_hours': att_sheet.general_deductions,
-            }]
-
-            medical_insurance_employee_deduction = [{
-                'name': "Medical Insurance Employee",
-                'code': 'MedicalInsuranceEmployee',
-                'contract_id': contract_id,
-                'sequence': 85,
-                'number_of_days': att_sheet.medical_insurance_employee,
-                'number_of_hours': att_sheet.medical_insurance_employee,
-            }]
-            medical_insurance_family_deduction = [{
-                'name': "Medical Insurance Family",
-                'code': 'MedicalInsuranceFamily',
-                'contract_id': contract_id,
-                'sequence': 90,
-                'number_of_days': att_sheet.medical_insurance_family,
-                'number_of_hours': att_sheet.medical_insurance_family,
-            }]
-            employee_insurance_amount_deduction = [{
-                'name': "Employee Insurance Amount",
-                'code': 'EmployeeInsuranceAmount',
-                'contract_id': contract_id,
-                'sequence': 95,
-                'number_of_days': att_sheet.employee_insurance_amount,
-                'number_of_hours': att_sheet.employee_insurance_amount,
-            }]
-            employee_gosi_deduction = [{
-                'name': "Employee Gosi",
-                'code': 'EmployeeGosi',
-                'contract_id': contract_id,
-                'sequence': 100,
-                'number_of_days': att_sheet.employee_gosi,
-                'number_of_hours': att_sheet.employee_gosi,
-            }]
-
-            employee_penalty_deduction = [{
-                'name': "Employee Penalty",
-                'code': 'EmployeePenalty',
-                'contract_id': contract_id,
-                'sequence': 105,
-                'number_of_days': att_sheet.penalty,
-                'number_of_hours': att_sheet.penalty,
-            }]
-
-            business_trip_deduction = [{
-                'name': "Business Trip",
-                'code': 'BusinessTrip',
-                'contract_id': contract_id,
-                'sequence': 110,
-                'number_of_days': att_sheet.business_trip,
-                'number_of_hours': att_sheet.business_trip,
-            }]
-
-            # residency_issuance_and_renewal_costs_deduction = [{
-            #     'name': "Residency Issuance And Renewal Costs",
-            #     'code': 'ResidencyIssuanceAndRenewalCosts',
-            #     'contract_id': contract_id,
-            #     'sequence': 115,
-            #     'number_of_days': att_sheet.residency_issuance_and_renewal_costs,
-            #     'number_of_hours': att_sheet.residency_issuance_and_renewal_costs,
-            # }]
-
-            # nature_of_work_allowances = [{
-            #     'name': "Nature Of Work Allowances",
-            #     'code': 'NatureOfWorkAllowances',
-            #     'contract_id': contract_id,
-            #     'sequence': 120,
-            #     'number_of_days': att_sheet.nature_of_work_allowances,
-            #     'number_of_hours': att_sheet.nature_of_work_allowances,
-            # }]
-
-            # food_allowances = [{
-            #     'name': "Food Allowances",
-            #     'code': 'FoodAllowances',
-            #     'contract_id': contract_id,
-            #     'sequence': 125,
-            #     'number_of_days': att_sheet.food_allowances,
-            #     'number_of_hours': att_sheet.food_allowances,
-            # }]
-
-            # end_of_service_allowance = [{
-            #     'name': "EndOfServiceAllowance",
-            #     'code': 'End Of Service Allowance',
-            #     'contract_id': contract_id,
-            #     'sequence': 130,
-            #     'number_of_days': att_sheet.end_of_service_allowance,
-            #     'number_of_hours': att_sheet.end_of_service_allowance,
-            # }]
-
-            # telephone_allowance = [{
-            #     'name': "TelephoneAllowance",
-            #     'code': 'Telephone Allowance',
-            #     'contract_id': contract_id,
-            #     'sequence': 135,
-            #     'number_of_days': att_sheet.telephone_allowance,
-            #     'number_of_hours': att_sheet.telephone_allowance,
-            # }]
-
-            # contract_extension_allowances = [{
-            #     'name': "Contract Extension Allowance",
-            #     'code': 'ContractExtensionAllowance',
-            #     'contract_id': contract_id,
-            #     'sequence': 140,
-            #     'number_of_days': att_sheet.contract_extension,
-            #     'number_of_hours': att_sheet.contract_extension,
-            # }]
-
-            # constant_refundable_advance = [{
-            #     'name': "Refundable Advance Allowance",
-            #     'code': 'RefundableAdvanceAllowance',
-            #     'contract_id': contract_id,
-            #     'sequence': 145,
-            #     'number_of_days': att_sheet.constant_refundable_advance,
-            #     'number_of_hours': att_sheet.constant_refundable_advance,
-            # }]
-            # TODO _____________ AHMED SABER END CUSTOM SALARY ROLES _____________
 
             overtime = [{
                 'name': "Overtime",
@@ -1356,7 +787,7 @@ class AttendanceSheet(models.Model):
                 'number_of_days': att_sheet.no_difftime,
                 'number_of_hours': att_sheet.tot_difftime,
             }]
-            worked_days_line_ids += overtime + late + absence + difftime + termination_indemnity_allowance + house_allowances + living_allowances + other_allowances + general_deductions + medical_insurance_employee_deduction + medical_insurance_family_deduction + employee_insurance_amount_deduction + employee_gosi_deduction + employee_penalty_deduction + business_trip_deduction
+            worked_days_line_ids += overtime + late + absence + difftime
 
             res = {
                 'employee_id': employee.id,
