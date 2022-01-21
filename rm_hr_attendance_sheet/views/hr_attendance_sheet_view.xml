@@ -16,8 +16,7 @@
                             class="oe_highlight"/>
                     <button name="action_approve" states="confirm"
                             string="Approve" type="object"
-                            class="oe_highlight"
-                            groups="rm_hr_attendance_sheet.group_attendance_sheet_manager"/>
+                            class="oe_highlight" />
                     <button name="action_draft" states="confirm"
                             string="Set to Draft" type="object"/>
                     <field name="state" widget="statusbar"
@@ -247,17 +246,12 @@
 
     <menuitem id="attendance_sheet_menu" name="Attendance Sheets"
               parent="hr_attendance.menu_hr_attendance_root"
-              sequence="25"
-              groups="rm_hr_attendance_sheet.group_attendance_sheet_user"/>
+              sequence="25" />
 
     <menuitem id="menu_rm_hr_attendance_sheet" name="Attendance sheets"
               parent="attendance_sheet_menu"
               sequence="10" action="action_attendance_sheet"/>
 
-    <record model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_root">
-        <field name="groups_id"
-               eval="[(4, ref('rm_hr_attendance_sheet.group_attendance_sheet_user'))]"/>
-    </record>
 
 
 </odoo>

@@ -267,8 +267,7 @@
     <menuitem id="menu_hr_attendance_sheet_setting"
               name="Attendance Sheet Setting"
               parent="hr_attendance.menu_hr_attendance_root"
-              sequence="40"
-              groups="rm_hr_attendance_sheet.group_attendance_sheet_manager"/>
+              sequence="40"/>
 
     <menuitem id="menu_hr_attendance_policy_action" name="Attendances Policies"
               parent="menu_hr_attendance_sheet_setting"
@@ -276,8 +275,7 @@
 
     <menuitem id="menu_hr_attendance_rules" name="Attendance Rules"
               parent="menu_hr_attendance_sheet_setting"
-              sequence="50"
-              groups="rm_hr_attendance_sheet.group_attendance_sheet_manager"/>
+              sequence="50"/>
 
     <menuitem id="menu_hr_overtime_rules" name="OverTime Rules"
               parent="menu_hr_attendance_rules" action="action_overtime_rules"
