@@ -23,7 +23,9 @@
                 'hr_attendance',
                 'bonus_request',
                 'penalty_request',
-                'business_trip',],
+                'business_trip',
+                'salary_calcs_real',
+                'contract_wage_fields'],
     'data': [
         'data/ir_sequence.xml',
         'data/data.xml',
