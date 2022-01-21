@@ -21,9 +21,7 @@
                 'hr_payroll',
                 'hr_holidays',
                 'hr_attendance',
-                'bonus_request',
-                'penalty_request',
-                'business_trip',],
+                'hr_employee_contract',],
     'data': [
         'data/ir_sequence.xml',
         'data/data.xml',

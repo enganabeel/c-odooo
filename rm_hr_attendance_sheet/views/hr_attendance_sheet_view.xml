@@ -134,69 +134,43 @@
                                            widget="float_time"/>
                                 </group>
 
-
                             </group>
                         </page>
                         <page string="Extra Attendance Sheet Data">
                             <group>
-
-                                <group string="test" invisible="1">
-                                    <field name="test" widget="float_time" invisible="1"/>
+                                <group string="Total Termination Allowance">
+                                    <field name="termination_indemnity" widget="float_time" readonly="1"/>
                                 </group>
-
-                                <group string="Business Trip Cost Total">
-                                    <field name="business_trip_cost_total" widget="float_time" readonly="1"/>
+                                <group string="Social Insurance">
+                                    <field name="employee_insurance_amount" widget="float_time" readonly="1"/>
+                                    <field name="employee_gosi" widget="float_time" readonly="1"/>
                                 </group>
-
-                                <group string="Bonus Request">
-                                    <field name="bonus_request" widget="float_time" readonly="1"/>
+                                <group string="Medical Insurance">
+                                    <field name="medical_insurance_employee" widget="float_time" readonly="1"/>
+                                    <field name="medical_insurance_family" widget="float_time" readonly="1"/>
                                 </group>
-
-                                <group string="Penalty Request">
-                                    <field name="penalty_request" widget="float_time" readonly="1"/>
-                                </group>
-
-                                <group string="Bonus Manual">
-                                    <field name="bonus_manual" widget="float_time"/>
-                                </group>
-
-                                <group string="Penalty Manual">
-                                    <field name="penalty_manual" widget="float_time"/>
-                                </group>
-
-                                <group string="Total Sick Leave Deduction">
-                                    <field name="tot_sick_deduction" widget="float_time" readonly="1"/>
-                                </group>
-
-                                <group string="Total External work mission allowance">
-                                    <field name="tot_external_work_mission_allowance" widget="float_time" readonly="1"/>
-                                </group>
-
-                                <group string="Actual Wage Allowance">
-                                    <field name="actual_wage" widget="float_time" readonly="1"/>
-                                </group>
-
-                                <group string="Actual Changeable Wage Allowance">
-                                    <field name="actual_changeable_wage" widget="float_time" readonly="1"/>
-                                </group>
-
-                                <group string="insurance salary Deduction">
-                                    <field name="insurance_salary" widget="float_time" readonly="1"/>
-                                </group>
-
-                                <group string="Profit Tax Amount Deduction">
-                                    <field name="profit_tax_amount" widget="float_time" readonly="1"/>
-                                </group>
-                                <group string="Loans Deduction">
-                                    <field name="loans" widget="float_time" readonly="1"/>
-                                </group>
-                                <group string="Mobile Bill Deduction">
-                                    <field name="mobile_bill" widget="float_time" readonly="1"/>
-                                </group>
+                                <group string="Allowances And Deductions">
+                                    <field name="house_allowances" widget="float_time" readonly="1"/>
+                                    <field name="transport_allowances" widget="float_time" readonly="1"/>
+<!--                                    <field name="living_allowances" widget="float_time" readonly="1"/>-->
+                                    <field name="other_allowances" widget="float_time" readonly="1"/>
+<!--                                    <field name="internal_travel_allowances" widget="float_time" readonly="1"/>-->
+                                    <field name="general_deductions" widget="float_time" readonly="1"/>
+                                    <field name="penalty" widget="float_time" readonly="1"/>
+                                    <field name="business_trip" widget="float_time" readonly="1"/>
+<!--                                    <field name="residency_issuance_and_renewal_costs" widget="float_time" readonly="1"/>-->
 
 
+<!--                                    <field name="nature_of_work_allowances" widget="float_time" readonly="1"/>-->
+<!--                                    <field name="food_allowances" widget="float_time" readonly="1"/>-->
+<!--                                    <field name="end_of_service_allowance" widget="float_time" readonly="1"/>-->
+<!--                                    <field name="telephone_allowance" widget="float_time" readonly="1"/>-->
+<!--                                    <field name="contract_extension" widget="float_time" readonly="1"/>-->
+<!--                                    <field name="constant_refundable_advance" widget="float_time" readonly="1"/>-->
+                                </group>
                             </group>
                         </page>
+
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">

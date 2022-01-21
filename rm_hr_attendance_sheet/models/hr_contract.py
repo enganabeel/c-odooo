@@ -22,4 +22,3 @@ class HrContract(models.Model):
     _description = 'Employee Contract'
     att_policy_id = fields.Many2one('hr.attendance.policy',
                                     string='Attendance Policy')
-    
