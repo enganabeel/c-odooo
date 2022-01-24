@@ -79,8 +79,7 @@
 
     <menuitem id="menu_hr_attendance_sheet_batch" name="Attendance sheet Batches"
               parent="rm_hr_attendance_sheet.attendance_sheet_menu"
-              sequence="12" action="action_attendance_sheet_batch_action"
-              groups="rm_hr_attendance_sheet.group_attendance_sheet_user"/>
+              sequence="12" action="action_attendance_sheet_batch_action" />
 
 
 </odoo>
