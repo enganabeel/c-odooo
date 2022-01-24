@@ -25,7 +25,7 @@
         'data/ir_sequence.xml',
         #'data/data.xml',
        # 'security/security.xml',
-        'security/ir.model.access.csv',
+      #  'security/ir.model.access.csv',
         'wizard/change_att_data_view.xml',
         'views/hr_attendance_sheet_view.xml',
         'views/hr_attendance_policy_view.xml',
