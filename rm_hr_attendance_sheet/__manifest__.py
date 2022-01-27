@@ -23,7 +23,7 @@
                 'hr_attendance'],
     'data': [
         'data/ir_sequence.xml',
-        #'data/data.xml',
+        'data/data.xml',
        # 'security/security.xml',
       #  'security/ir.model.access.csv',
         'wizard/change_att_data_view.xml',
