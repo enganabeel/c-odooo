@@ -8,21 +8,21 @@ class HrPayslipInherit(models.Model):
     def compute_sheet(self):
         summ=0
         summ1=0
-        late_obj = self.env['late.check_in'].search(
-            [('employee_id', '=', self.employee_id.id), ('date', '>=', self.date_from), ('date', '<=', self.date_to)])
-        if late_obj:
-            for recc in late_obj:
-                summ += recc.late_minutes
-        self.employee_id.latee = summ
-        early_leave = self.env["hr.attendance"].search(
-            [('employee_id', '=', self.employee_id.id), ('checkout_date', '>=', self.date_from),
-             ('checkout_date', '<=', self.date_to)])
+        #late_obj = self.env['late.check_in'].search(
+        #    [('employee_id', '=', self.employee_id.id), ('date', '>=', self.date_from), ('date', '<=', self.date_to)])
+        #if late_obj:
+        #    for recc in late_obj:
+        #        summ += recc.late_minutes
+        #self.employee_id.latee = summ
+        #early_leave = self.env["hr.attendance"].search(
+        #    [('employee_id', '=', self.employee_id.id), ('checkout_date', '>=', self.date_from),
+        #     ('checkout_date', '<=', self.date_to)])
 
-        print(early_leave)
-        if early_leave:
-            for recc in early_leave:
-                summ1 += recc.early_check_out
-        self.employee_id.early_leave = summ1
+        #print(early_leave)
+        #if early_leave:
+        #    for recc in early_leave:
+        #        summ1 += recc.early_check_out
+        #self.employee_id.early_leave = summ1
 
         absent = 0
         delta = self.date_to - self.date_from
