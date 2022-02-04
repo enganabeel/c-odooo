@@ -27,6 +27,7 @@
                               <field name="create_date"/>
                               <field name="x_activity" />
                               <field name="x_signed" />
+                              <field name="sign_contract_date" attrs="{'invisible': [('x_signed','=',False)] }"/>
                               <field name="x_paid" />
                               <field name="sign_date" attrs="{'invisible': [('x_paid','=',False)] }"/>
                               <field name="x_signing_problem" />
@@ -118,6 +119,7 @@
                     <field name="x_assigned_to"/>
                     <field name="x_activity"/>
                     <field name="x_signed"/>
+                    <field name="sign_contract_date"/>
                     <field name="x_paid"/>
                     <field name="sign_date" />
                     <field name="x_signing_problem"/>

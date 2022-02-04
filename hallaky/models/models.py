@@ -39,6 +39,8 @@ class IrAttachment(models.Model):
     x_signing_problem = fields.Text(string="Remarks or notes",indexed=True,tracking=1,store=True)
     x_street = fields.Many2one('x_street', string="Street", indexed=True, tracking=1, store=True)
     sign_date =fields.Date(string="Payment Date")
+    sign_contract_date = fields.Date(string="Sign Contract Date")
+
     has_long=fields.Boolean(string="تم ادخال الموقع",store=True,compute="_has_long_compute")
 
     has_branches = fields.Boolean('Has Branches ? ',tracking=1)
