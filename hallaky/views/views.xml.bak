@@ -45,7 +45,6 @@
                               <field name="has_long" invisible="1"/>
                               <field name="branches_ids" attrs="{'invisible': [('has_branches','=',False)] }"/>
 
-
                               <field name="is_a_branch" />
                               <field name="branch_id" attrs="{'invisible': [('is_a_branch','=',False)] }"/>
                           </group>
