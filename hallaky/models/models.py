@@ -61,6 +61,7 @@ class IrAttachment(models.Model):
     house_service = fields.Boolean(string="الخدمة المنزلية")
 
 
+
     def _has_long_compute(self):
         for i in self:
             if i.long > 0.00:
